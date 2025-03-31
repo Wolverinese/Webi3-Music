@@ -17,7 +17,7 @@
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/AudiusProject/audius-protocol/tree/main.svg?style=svg&circle-token=7813cfa60dbb92905f7fa2979eced3e33f1d77af)](https://dl.circleci.com/status-badge/redirect/gh/AudiusProject/audius-protocol/tree/main)
 
-Audius is a decentralized, community-owned music-sharing protocol
+Audius Webi3 is a decentralized, community-owned music-sharing protocol
 
 For details on operating an Audius service, getting started with the Token and the API, see [docs.audius.org](https://docs.audius.org/).
 
