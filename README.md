@@ -93,7 +93,7 @@ For all available commands please see the [package.json scripts](https://github.
 
 ## Contributing
 
-We welcome contributions to Audius from anyone who opens a PR. Feel free to reach out to
+We welcome contributions to Webi3 from anyone who opens a PR. Feel free to reach out to
 our team [on Discord](https://discord.gg/audius) or via other channels for feedback and/or support!
 
 ## Security
