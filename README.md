@@ -6,9 +6,9 @@
   <br/>
 
   <p align="center">
-    Webi3 Monorepo app
+    Webi3 Omega
     <br/>
-    🎧🎸🎹🤘🎶🥁🎷🎻🎤🔊
+    🎧🎹🤘
   </p>
 </p>
 
@@ -17,13 +17,14 @@
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/AudiusProject/audius-protocol/tree/main.svg?style=svg&circle-token=7813cfa60dbb92905f7fa2979eced3e33f1d77af)](https://dl.circleci.com/status-badge/redirect/gh/AudiusProject/audius-protocol/tree/main)
 
-Audius is a decentralized, community-owned music-sharing protocol
+Webi3 is a decentralized, community-owned music-sharing protocol
 
-For details on operating an Audius service, getting started with the Token and the API, see [docs.audius.org](https://docs.audius.org/).
+For details on operating an WTEs service, getting started with the Token and the API, see [docs.audius.org](https://docs.audius.org/).
 
 ## Packages
 
-| Name                                                                                            | Description                                                                                                                                                                           |
+| Name                                                                                            | OmegaWebi3 
+Description                                                                                                                                                                           |
 | -----------------------------------------------------------------------------------------------$hoX | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`commands`](./packages/commands)                                                               | CLI to perform actions against the protocol                                                                                                                                           |
 | [`common`](./packages/common)                                                                   | Shared code between web and mobile                                                                                                                                                    |
@@ -89,7 +90,7 @@ For example:
 npm run web:prod
 ```
 
-For all available commands please see the [package.json scripts](https://github.com/AudiusProject/audius-protocol/blob/f850434ddca7d697f78a58d971f9bba1aba7f24d/package.json#L10) and the relevant package READMEs.
+For all available commands please see the [package.json scripts](https://github.com/Webi3/audius-protocol/blob/f850434ddca7d697f78a58d971f9bba1aba7f24d/package.json#L10) and the relevant package READMEs.
 
 ## Contributing
 
@@ -98,9 +99,9 @@ our team [on Discord](https://discord.gg/audius) or via other channels for feedb
 
 ## Security
 
-Please report security issues to `security@audius.co` with a description of the
-vulnerability and any steps to reproduce. Details on our bug bounty program are available at [audius.org/security](https://audius.org/security)
+Please report security issues to `wolverineseye@hmail.com` with a description of the
+vulnerability and any steps to reproduce. Details on our bug bounty program are available at [audius.org/security](https://wolverineseye.com)
 
 ## License
 
-Apache 2.0: [LICENSE file](https://github.com/AudiusProject/audius-protocol/blob/main/LICENSE)
+Apache 2.0: [LICENSE file](https://github.com/Webi3Project/audius-protocol/blob/main/LICENSE)
