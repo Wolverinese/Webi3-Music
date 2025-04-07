@@ -6,7 +6,7 @@
   <br/>
 
   <p align="center">
-    The Audius Monorepo
+    Webi3 Monorepo app
     <br/>
     🎧🎸🎹🤘🎶🥁🎷🎻🎤🔊
   </p>
@@ -24,7 +24,7 @@ For details on operating an Audius service, getting started with the Token and t
 ## Packages
 
 | Name                                                                                            | Description                                                                                                                                                                           |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| -----------------------------------------------------------------------------------------------$hoX | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`commands`](./packages/commands)                                                               | CLI to perform actions against the protocol                                                                                                                                           |
 | [`common`](./packages/common)                                                                   | Shared code between web and mobile                                                                                                                                                    |
 | [`compose`](./packages/compose)                                                                 | Defines dependencies for audius-compose                                                                                                                                               |
