@@ -18,7 +18,34 @@ jobs:
       - store_artifacts:
           path: build
           destination: ios-build
+  playwright-e2e:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.43.1-focal
+    working_directory: ~/project
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-cache-{{ checksum "package-lock.json" }}
+            - npm-cache-
+      - run:
+          name: Install dependencies
+          command: npm ci
+      - save_cache:
+          key: npm-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+      - run:
+          name: Install Playwright browsers
+          command: npx playwright install --with-deps
+      - run:
+          name: Run Playwright end-to-end tests
+          command: npx playwright test
+      - store_artifacts:
+          path: test-results
+          destination: playwright-results
 workflows:
   ios-build-workflow:
     jobs:
       - ios-build
+      - playwright-e2e
