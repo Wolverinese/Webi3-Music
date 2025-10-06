@@ -4,7 +4,10 @@ import { useCurrentAccountUser, useUserCreatedCoins } from '@audius/common/api'
 import { useFeatureFlag } from '@audius/common/hooks'
 import { walletMessages } from '@audius/common/messages'
 import { FeatureFlags } from '@audius/common/services'
-import { COINS_CREATE_PAGE } from '@audius/common/src/utils/route'
+import {
+  COINS_CREATE_PAGE,
+  AUDIUS_ARTIST_COINS_HELP_LINK
+} from '@audius/common/src/utils/route'
 import {
   Box,
   Button,
@@ -184,7 +187,7 @@ const DesktopArtistCoinsExplorePage = () => {
                 </Flex>
 
                 {/* With absolute positioning, must be rendered after the checklist items to have higher z-index */}
-                <ExternalLink to='https://help.audius.co/'>
+                <ExternalLink to={AUDIUS_ARTIST_COINS_HELP_LINK}>
                   <PlainButton
                     iconLeft={IconQuestionCircle}
                     asChild
