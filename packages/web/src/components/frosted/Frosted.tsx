@@ -21,6 +21,7 @@ export const Frosted = ({
   }, [])
   return (
     <Flex
+      column
       css={{
         backdropFilter: 'blur(10px)',
         zIndex: 10,
