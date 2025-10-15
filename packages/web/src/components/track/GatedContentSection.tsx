@@ -5,8 +5,6 @@ import {
   Name,
   FollowSource,
   ModalSource,
-  Chain,
-  isContentCollectibleGated,
   isContentFollowGated,
   isContentTipGated,
   isContentUSDCPurchaseGated,
@@ -28,13 +26,8 @@ import { USDC } from '@audius/fixed-decimal'
 import {
   Flex,
   Text,
-  IconExternalLink,
   IconCart,
-  IconCollectible,
   IconSparkles,
-  IconLogoCircleETH,
-  IconLogoCircleSOL,
-  useTheme,
   Button,
   IconUserFollow,
   IconTipping,
@@ -68,20 +61,12 @@ const getMessages = (contentType: PurchaseableContentType) => ({
   unlocking: 'unlocking',
   unlocked: 'unlocked',
   coinGated: 'COIN GATED',
-  collectibleGated: 'COLLECTIBLE GATED',
   specialAccess: 'SPECIAL ACCESS',
-  goToCollection: 'Open Collection',
   sendTip: 'Send Tip',
   followArtist: 'Follow Artist',
   buyArtistCoin: 'Buy Artist Coin',
   period: '.',
   exclamationMark: '!',
-  ownCollectibleGatedPrefix:
-    'Users can unlock access by linking a wallet containing a collectible from ',
-  unlockCollectibleGatedContent: `To unlock this ${contentType}, you must link a wallet containing a collectible from `,
-  aCollectibleFrom: 'A Collectible from ',
-  unlockingCollectibleGatedContentSuffix: 'was found in a linked wallet.',
-  unlockedCollectibleGatedContentSuffix: `was found in a linked wallet. This ${contentType} is now available.`,
   ownFollowGated: 'Users can unlock access by following your account!',
   unlockFollowGatedContentPrefix: 'Follow',
   thankYouForFollowing: 'Thank you for following',
@@ -114,7 +99,6 @@ type GatedContentAccessSectionProps = {
   streamConditions: AccessConditions
   followee: Nullable<User>
   tippedUser: Nullable<User>
-  goToCollection: () => void
   isOwner: boolean
   className?: string
   buttonClassName?: string
@@ -127,7 +111,6 @@ const LockedGatedContentSection = ({
   streamConditions,
   followee,
   tippedUser,
-  goToCollection,
   className,
   buttonClassName,
   source
@@ -151,7 +134,6 @@ const LockedGatedContentSection = ({
     : FollowSource.HOW_TO_UNLOCK_TRACK_PAGE
   const isUSDCPurchaseGated = isContentUSDCPurchaseGated(streamConditions)
   const isTokenGated = isContentTokenGated(streamConditions)
-  const { spacing } = useTheme()
   const [searchParams] = useSearchParams()
   const openCheckout = searchParams.get('checkout') === 'true'
 
@@ -257,36 +239,6 @@ const LockedGatedContentSection = ({
   ])
 
   const renderLockedDescription = () => {
-    if (isContentCollectibleGated(streamConditions)) {
-      const { nft_collection } = streamConditions
-      const { imageUrl, name, chain } = nft_collection
-      const ChainIcon =
-        chain === Chain.Eth ? IconLogoCircleETH : IconLogoCircleSOL
-      return (
-        <Text variant='body' strength='strong'>
-          <Flex className={styles.collectibleGatedDescription}>
-            {messages.unlockCollectibleGatedContent}
-          </Flex>
-          <Flex
-            className={styles.gatedContentSectionCollection}
-            onClick={goToCollection}
-          >
-            {imageUrl && (
-              <Flex className={styles.collectionIconsContainer}>
-                <img
-                  src={imageUrl}
-                  alt={`${name} nft collection`}
-                  className={styles.collectibleImage}
-                />
-                <ChainIcon css={{ position: 'relative', left: -spacing.s }} />
-              </Flex>
-            )}
-            <span>{name}</span>
-          </Flex>
-        </Text>
-      )
-    }
-
     if (isContentFollowGated(streamConditions) && followee) {
       return (
         <Text variant='body' strength='strong'>
@@ -339,20 +291,6 @@ const LockedGatedContentSection = ({
   }
 
   const renderButton = () => {
-    if (isContentCollectibleGated(streamConditions)) {
-      return (
-        <Button
-          variant='primary'
-          color='blue'
-          onClick={goToCollection}
-          iconRight={IconExternalLink}
-          fullWidth
-        >
-          {messages.goToCollection}
-        </Button>
-      )
-    }
-
     if (isContentFollowGated(streamConditions)) {
       return (
         <Button
@@ -467,7 +405,6 @@ const UnlockingGatedContentSection = ({
   streamConditions,
   followee,
   tippedUser,
-  goToCollection,
   className
 }: Omit<
   GatedContentAccessSectionProps,
@@ -475,18 +412,6 @@ const UnlockingGatedContentSection = ({
 >) => {
   const messages = getMessages(contentType)
   const renderUnlockingDescription = () => {
-    if (isContentCollectibleGated(streamConditions)) {
-      return (
-        <div>
-          <span>{messages.aCollectibleFrom}</span>
-          <span className={styles.collectibleName} onClick={goToCollection}>
-            &nbsp;{streamConditions.nft_collection?.name}&nbsp;
-          </span>
-          <span>{messages.unlockingCollectibleGatedContentSuffix}</span>
-        </div>
-      )
-    }
-
     if (isContentFollowGated(streamConditions) && followee) {
       return (
         <Text>
@@ -552,7 +477,6 @@ const UnlockedGatedContentSection = ({
   streamConditions,
   followee,
   tippedUser,
-  goToCollection,
   isOwner,
   trackOwner,
   className
@@ -568,26 +492,6 @@ const UnlockedGatedContentSection = ({
   )
 
   const renderUnlockedDescription = () => {
-    if (isContentCollectibleGated(streamConditions)) {
-      return isOwner ? (
-        <>
-          {messages.ownCollectibleGatedPrefix}
-          <span className={styles.collectibleName} onClick={goToCollection}>
-            {streamConditions.nft_collection?.name}
-          </span>
-        </>
-      ) : (
-        <>
-          {messages.aCollectibleFrom}
-          <span className={styles.collectibleName} onClick={goToCollection}>
-            {streamConditions.nft_collection?.name}
-          </span>
-          &nbsp;
-          {messages.unlockedCollectibleGatedContentSuffix}
-        </>
-      )
-    }
-
     if (isContentFollowGated(streamConditions) && followee) {
       return isOwner ? (
         messages.ownFollowGated
@@ -656,10 +560,7 @@ const UnlockedGatedContentSection = ({
   let IconComponent = IconSparkles
   let gatedConditionTitle = messages.specialAccess
 
-  if (isContentCollectibleGated(streamConditions)) {
-    IconComponent = IconCollectible
-    gatedConditionTitle = messages.collectibleGated
-  } else if (isContentUSDCPurchaseGated(streamConditions)) {
+  if (isContentUSDCPurchaseGated(streamConditions)) {
     IconComponent = IconCart
     gatedConditionTitle = messages.payToUnlock
   } else if (isContentTokenGated(streamConditions)) {
@@ -739,11 +640,7 @@ export const GatedContentSection = ({
   const isTokenGated = isContentTokenGated(streamConditions)
   const isUSDCPurchaseGated = isContentUSDCPurchaseGated(streamConditions)
   const shouldDisplay =
-    isFollowGated ||
-    isTipGated ||
-    isContentCollectibleGated(streamConditions) ||
-    isUSDCPurchaseGated ||
-    isTokenGated
+    isFollowGated || isTipGated || isUSDCPurchaseGated || isTokenGated
   const { byId: users } = useUsers(
     [
       isFollowGated ? streamConditions.follow_user_id : null,
@@ -761,24 +658,6 @@ export const GatedContentSection = ({
     [styles.hide]: isLoading
   }
 
-  const handleGoToCollection = useCallback(() => {
-    if (!isContentCollectibleGated(streamConditions)) return
-    const { chain, address, externalLink } =
-      streamConditions.nft_collection ?? {}
-    if (chain === Chain.Eth && 'slug' in streamConditions.nft_collection!) {
-      const url = `https://opensea.io/collection/${streamConditions.nft_collection.slug}`
-      window.open(url, '_blank')
-    } else if (chain === Chain.Sol) {
-      if (externalLink) {
-        const url = new URL(externalLink)
-        window.open(`${url.protocol}//${url.hostname}`)
-      } else {
-        const explorerUrl = `https://explorer.solana.com/address/${address}`
-        window.open(explorerUrl, '_blank')
-      }
-    }
-  }, [streamConditions])
-
   if (!streamConditions) return null
   if (!shouldDisplay) return null
 
@@ -792,7 +671,6 @@ export const GatedContentSection = ({
           streamConditions={streamConditions}
           followee={followee}
           tippedUser={tippedUser}
-          goToCollection={handleGoToCollection}
           isOwner={isOwner}
           className={className}
           trackOwner={trackOwner}
@@ -811,7 +689,6 @@ export const GatedContentSection = ({
           streamConditions={streamConditions}
           followee={followee}
           tippedUser={tippedUser}
-          goToCollection={handleGoToCollection}
           isOwner={isOwner}
           className={className}
         />
@@ -828,7 +705,6 @@ export const GatedContentSection = ({
         streamConditions={streamConditions}
         followee={followee}
         tippedUser={tippedUser}
-        goToCollection={handleGoToCollection}
         isOwner={isOwner}
         className={cn(styles.gatedContentSectionLocked, className)}
         buttonClassName={buttonClassName}
