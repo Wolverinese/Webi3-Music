@@ -97,7 +97,7 @@
     "@react-spring/web": "9.7.2",
     "@reduxjs/toolkit": "1.6.1",
     "@reown/appkit": "1.7.1",
-    "@reown/appkit-adapter-solana": "1.7.1",
+    "@reown/appkit-adapter-solana": "1.7.1",  
     "@reown/appkit-adapter-wagmi": "1.7.1",
     "@reown/appkit-wallet-button": "1.7.1",
     "@sentry/browser": "7.117.0",
