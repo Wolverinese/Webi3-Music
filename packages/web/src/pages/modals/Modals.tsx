@@ -60,6 +60,7 @@ import AudioBreakdownModal from 'pages/audio-page/components/modals/AudioBreakdo
 import { ConnectedWalletsModal } from 'pages/audio-page/components/modals/ConnectedWalletsModal'
 import TransferAudioMobileDrawer from 'pages/audio-page/components/modals/TransferAudioMobileDrawer'
 import { ChatBlastModal } from 'pages/chat-page/components/ChatBlastModal'
+import { ClaimVestedCoinsModal } from 'pages/coin-detail-page/components/ClaimVestedCoinsModal'
 import { ChallengeRewardsModal } from 'pages/rewards-page/components/modals/ChallengeRewardsModal'
 
 import { AppModal } from './AppModal'
@@ -113,6 +114,7 @@ const commonModalsMap: { [Modal in ModalTypes]?: ComponentType } = {
   TrendingRewardsExplainer: TrendingRewardsModal,
   ChallengeRewards: ChallengeRewardsModal,
   ClaimAllRewards: ClaimAllRewardsModal,
+  ClaimVestedCoinsModal,
   TransferAudioMobileWarning: TransferAudioMobileDrawer,
   BrowserPushPermissionConfirmation: BrowserPushConfirmationModal,
   Welcome: WelcomeModal,
