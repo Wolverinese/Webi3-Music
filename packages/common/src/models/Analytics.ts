@@ -3040,6 +3040,7 @@ export type LaunchpadClaimFeesClicked = {
 
 export type LaunchpadClaimFeesSuccess = {
   eventName: Name.LAUNCHPAD_CLAIM_FEES_SUCCESS
+  signatures: string[]
   walletAddress: string
   coinSymbol?: string
   mintAddress?: string
@@ -3090,6 +3091,7 @@ export type LaunchpadClaimVestedCoinsConnectWallet = {
 
 export type LaunchpadClaimVestedCoinsSuccess = {
   eventName: Name.LAUNCHPAD_CLAIM_VESTED_COINS_SUCCESS
+  signature: string
   walletAddress: string
   coinSymbol?: string
   mintAddress?: string
