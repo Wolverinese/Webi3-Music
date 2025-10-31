@@ -3,6 +3,7 @@ import { useContext, useEffect } from 'react'
 import { Flex, IconWallet } from '@audius/harmony'
 import { useTheme } from '@emotion/react'
 
+import { AccountBalance } from 'components/account-balance'
 import { Header } from 'components/header/desktop/Header'
 import { useMobileHeader } from 'components/header/mobile/hooks'
 import MobilePageContainer from 'components/mobile-page-container/MobilePageContainer'
@@ -48,6 +49,7 @@ export const WalletPage = () => {
         }
       }}
     >
+      <AccountBalance />
       <WalletCoinsList />
       <LinkedWallets />
     </Flex>
