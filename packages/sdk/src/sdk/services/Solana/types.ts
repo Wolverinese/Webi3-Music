@@ -179,3 +179,26 @@ export type ClaimVestedCoinsResponse = {
   userClaimedAmount?: string
   rewardsPoolClaimedAmount?: string
 }
+
+export type SwapCoinQuoteRequest = {
+  inputAmountUi: string // UI format amount of input token (e.g., "100")
+  coinMint: string // Mint address of the artist coin
+  swapDirection: 'audioToCoin' | 'coinToAudio' // Direction of the swap
+}
+
+export type SwapCoinQuoteResponse = {
+  outputAmount: string // Expected output amount in raw token format
+}
+
+export type SwapCoinRequest = {
+  inputAmountUi: string // UI format amount of input token (e.g., "100")
+  coinMint: string // Mint address of the artist coin
+  swapDirection: 'audioToCoin' | 'coinToAudio' // Direction of the swap
+  userPublicKey: PublicKey // Public key of the user initiating the swap
+  isExternalWallet?: boolean // Whether the user is using an external wallet (optional)
+}
+
+export type SwapCoinResponse = {
+  transaction: string // Base64-encoded serialized transaction
+  outputAmount: string // Expected output amount in raw token format
+}
