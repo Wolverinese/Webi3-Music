@@ -64,7 +64,6 @@ export const getCurrentAccountQueryFn = async (
   }
 
   const account = accountFromSDK(data)
-
   if (account) {
     queryClient.setQueryData(getAccountStatusQueryKey(), Status.SUCCESS)
   } else {
