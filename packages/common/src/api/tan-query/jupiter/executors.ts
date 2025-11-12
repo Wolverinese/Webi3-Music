@@ -262,7 +262,7 @@ async function executeMeteoraSwap(
       },
       outputAmount: {
         amount: Number(
-          new FixedDecimal(outputAmount, outputTokenInfo.decimals).value
+          new FixedDecimal(BigInt(outputAmount), outputTokenInfo.decimals).value
         ),
         uiAmount: Number(
           new FixedDecimal(
