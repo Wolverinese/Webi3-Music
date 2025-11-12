@@ -15,6 +15,7 @@ import { Provider } from 'react-redux'
 import { Router } from 'react-router-dom'
 import { CompatRouter } from 'react-router-dom-v5-compat'
 import { PartialDeep } from 'type-fest'
+import { it as vitestIt } from 'vitest'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 import { mock } from 'wagmi/connectors'
@@ -134,8 +135,29 @@ export { customRender as render }
 export const mswServer = setupServer()
 
 // Removes the long DOM output from failed queries
+// the DOM output is usually too short to show anything useful but also so large that it floods the console
+function getElementError(message: any) {
+  const error = new Error(message)
+  // Remove this function from the stack trace so the trace points
+  // to where the test actually failed (in the testing library code)
+  if (Error.captureStackTrace) {
+    Error.captureStackTrace(error, getElementError)
+  } else {
+    // Fallback: remove frames related to getElementError
+    const stack = error.stack?.split('\n') || []
+    // Keep the first line (error message) and filter out getElementError frames
+    const filteredStack = stack.filter(
+      (line, index) =>
+        index === 0 || // Keep error message line
+        (!line.includes('getElementError') && !line.includes('test-utils.tsx'))
+    )
+    error.stack = filteredStack.join('\n')
+  }
+  return error
+}
+
 configure({
-  getElementError: (message: any) => new Error(message)
+  getElementError
 })
 
 /**
@@ -172,3 +194,64 @@ export function saveDomToFile(
   // eslint-disable-next-line no-console
   console.log(`🧾 DOM snapshot written to: ${filePath}`)
 }
+
+/**
+ * Wrapper around vitest's it() to add a feature that automatically capture DOM snapshots on test failure.
+ * The snapshot filename is based on the test name (sanitized for filesystem).
+ */
+function createItWrapper(): typeof vitestIt {
+  const itWrapper = (
+    name: string,
+    fn?: () => void | Promise<void>,
+    timeout?: number
+  ) => {
+    const wrappedFn = fn
+      ? async () => {
+          try {
+            return await fn()
+          } catch (error) {
+            // Capture DOM before cleanup happens
+            const sanitizedName = name
+              .toLowerCase()
+              .replace(/\s+/g, '-')
+              .replace(/[^a-z0-9-]/g, '')
+            const filename = `${sanitizedName}.html`
+            saveDomToFile(filename)
+            throw error
+          }
+        }
+      : undefined
+
+    return vitestIt(name, wrappedFn, timeout)
+  }
+
+  // Use a Proxy to forward all property access to vitestIt
+  // This ensures all methods (skip, only, todo, concurrent, fails, each, withContext, etc.) are available
+  return new Proxy(itWrapper, {
+    get(target, prop) {
+      // If the property exists on our wrapper function, return it
+      if (prop in target) {
+        return (target as any)[prop]
+      }
+      // Otherwise, forward to vitestIt
+      return (vitestIt as any)[prop]
+    },
+    has(target, prop) {
+      return prop in target || prop in vitestIt
+    },
+    ownKeys(target) {
+      // Combine keys from both target and vitestIt
+      const targetKeys = Reflect.ownKeys(target)
+      const vitestKeys = Reflect.ownKeys(vitestIt)
+      return Array.from(new Set([...targetKeys, ...vitestKeys]))
+    },
+    getOwnPropertyDescriptor(target, prop) {
+      if (prop in target) {
+        return Reflect.getOwnPropertyDescriptor(target, prop)
+      }
+      return Reflect.getOwnPropertyDescriptor(vitestIt, prop)
+    }
+  }) as typeof vitestIt
+}
+
+export const it = createItWrapper()
