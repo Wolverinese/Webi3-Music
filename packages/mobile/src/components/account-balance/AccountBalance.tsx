@@ -94,7 +94,7 @@ export const AccountBalance = ({
         alignItems='center'
         border='default'
       >
-        <Text variant='body' size='m' strength='weak' color='danger'>
+        <Text variant='body' size='m' strength='weak' color='subdued'>
           {messages.error}
         </Text>
       </Paper>
