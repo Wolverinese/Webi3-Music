@@ -74,8 +74,6 @@ const messages = {
   }
 }
 
-const getArtistSocialLinks = getUserSocialLinks
-
 const LaunchpadPageContent = ({
   submitErrorText,
   submitButtonText
@@ -579,7 +577,7 @@ export const LaunchpadPage = () => {
         }
       } else {
         trackCoinCreationStarted(connectedWalletAddress, formValues)
-        const socialLinks = getArtistSocialLinks(currentUser)
+        const socialLinks = getUserSocialLinks(currentUser)
         launchCoin({
           userId: currentUser.user_id,
           name: formValues.coinName,
@@ -625,6 +623,7 @@ export const LaunchpadPage = () => {
         receiveAmount: '',
         usdcValue: '',
         wantsToBuy: 'no',
+        setupConfirmation: false,
         termsAgreed: false
       }}
       validationSchema={validationSchema}
