@@ -34,7 +34,9 @@ const messages = {
   }
 }
 
-export const SetupPage = ({ onContinue, onBack }: PhasePageProps) => {
+type SetupPageProps = PhasePageProps
+
+export const SetupPage = ({ onContinue, onBack }: SetupPageProps) => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isProcessingImage, setIsProcessingImage] = useState(false)
   const [imageError, setImageError] = useState<string | null>(null)
