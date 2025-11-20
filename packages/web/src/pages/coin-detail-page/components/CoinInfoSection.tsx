@@ -578,8 +578,14 @@ export const CoinInfoSection = ({ mint }: CoinInfoSectionProps) => {
     toast(overflowMessages.copiedToClipboard)
   }, [mint, toast])
 
+  // In some cases a custom-made coin will not have a dbc, so we should use the escrow recipient instead.
+  // It's possible to transfer the recipient however, so this isn't a perfect solution.
   const coinCreatorWalletAddress =
-    coin?.dynamicBondingCurve?.creatorWalletAddress
+    !!coin?.dynamicBondingCurve?.creatorWalletAddress &&
+    coin?.dynamicBondingCurve?.creatorWalletAddress !== ''
+      ? coin?.dynamicBondingCurve?.creatorWalletAddress
+      : coin?.escrowRecipient
+
   const handleClaimFees = useCallback(
     (walletAddress: string) => {
       claimFees({
@@ -699,6 +705,7 @@ export const CoinInfoSection = ({ mint }: CoinInfoSectionProps) => {
       }
       if (!connectedAddress || connectedAddress !== coinCreatorWalletAddress) {
         toast(toastMessages.incorrectWalletLinked)
+        return
       }
       openClaimVestedCoinsModal({
         ticker: coin?.ticker ?? '',
