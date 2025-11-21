@@ -1,5 +1,8 @@
 import { CpAmm } from '@meteora-ag/cp-amm-sdk'
-import { DynamicBondingCurveClient } from '@meteora-ag/dynamic-bonding-curve-sdk'
+import {
+  DynamicBondingCurveClient,
+  SwapMode
+} from '@meteora-ag/dynamic-bonding-curve-sdk'
 import { initializeDiscoveryDb } from '@pedalboard/basekit'
 import {
   SolMeteoraDammV2Pools,
@@ -15,6 +18,8 @@ import { config } from '../../config'
 import { logger } from '../../logger'
 import { getConnection } from '../../utils/connections'
 import { AUDIO_MINT } from '../launchpad/constants'
+
+import { SWAP_SLIPPAGE_BPS } from './constants'
 
 const db = initializeDiscoveryDb(config.discoveryDbConnectionString)
 
@@ -52,14 +57,16 @@ const getDBCPoolQuote = async (
   }
   const currentPoint = await connection.getSlot()
 
-  // Get swap quote
-  const quote = await dbcClient.pool.swapQuote({
+  // Get swap quote using swapQuote2 with PartialFill mode for consistent behavior
+  const quote = dbcClient.pool.swapQuote2({
     virtualPool: virtualPoolState,
     config: poolConfig,
     swapBaseForQuote: swapDirection === 'coinToAudio', // Base = coin, quote = audio
-    amountIn: inputAmountBN,
     hasReferral: false,
-    currentPoint: new BN(currentPoint)
+    currentPoint: new BN(currentPoint),
+    slippageBps: SWAP_SLIPPAGE_BPS, // 2% slippage tolerance for partial fills
+    swapMode: SwapMode.PartialFill,
+    amountIn: inputAmountBN
   })
   return quote.outputAmount.toString()
 }
