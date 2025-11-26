@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode, useEffect } from 'react'
 
 import fs from 'fs'
 import path from 'path'
@@ -9,28 +9,22 @@ import { FeatureFlags } from '@audius/common/services'
 import { MediaProvider, ThemeProvider } from '@audius/harmony'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { render, RenderOptions, configure } from '@testing-library/react'
-import { History } from 'history'
 import { setupServer } from 'msw/node'
 import { Provider } from 'react-redux'
-import { Router } from 'react-router-dom'
-import { CompatRouter } from 'react-router-dom-v5-compat'
+import { BrowserRouter, useNavigate } from 'react-router-dom'
 import { PartialDeep } from 'type-fest'
 import { it as vitestIt } from 'vitest'
 import { WagmiProvider, createConfig, http } from 'wagmi'
 import { mainnet } from 'wagmi/chains'
 import { mock } from 'wagmi/connectors'
 
-import {
-  HistoryContext,
-  HistoryContextProvider,
-  useHistoryContext
-} from 'app/HistoryProvider'
 import { RouterContextProvider } from 'components/animated-switch/RouterContextProvider'
 import { ToastContextProvider } from 'components/toast/ToastContext'
 import { useIsMobile } from 'hooks/useIsMobile'
 import { env } from 'services/env/env.dev'
 import { queryClient } from 'services/query-client'
 import { configureStore } from 'store/configureStore'
+import { setNavigateRef } from 'store/navigationMiddleware'
 import { AppState } from 'store/types'
 
 import { createMockAppContext } from './mocks/app-context'
@@ -52,7 +46,7 @@ const mockWagmiConfig = createConfig({
 type TestOptions = {
   reduxState?: PartialDeep<AppState>
   featureFlags?: Partial<Record<FeatureFlags, boolean>>
-  customHistory?: History
+  skipRouter?: boolean // If true, don't wrap in BrowserRouter (useful when using MemoryRouter in test)
 }
 
 type ReduxProviderProps = {
@@ -64,10 +58,8 @@ export const ReduxProvider = ({
   children,
   initialStoreState
 }: ReduxProviderProps) => {
-  const { history } = useHistoryContext()
   const isMobile = useIsMobile()
   const { store } = configureStore({
-    history,
     isMobile,
     initialStoreState,
     isTest: true
@@ -80,45 +72,57 @@ type TestProvidersProps = {
   children: ReactNode
 }
 
+// Component to set up navigation ref for middleware when using BrowserRouter
+const NavigationSetup = ({ children }: { children: ReactNode }) => {
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    setNavigateRef(navigate)
+    return () => {
+      setNavigateRef(null as any)
+    }
+  }, [navigate])
+
+  return <>{children}</>
+}
+
 const TestProviders =
   (options?: TestOptions) => (props: TestProvidersProps) => {
     const { children } = props
-    const { reduxState, featureFlags, customHistory } = options ?? {}
+    const { reduxState, featureFlags, skipRouter } = options ?? {}
     const mockAppContext = createMockAppContext(featureFlags)
     const queryContext = {
       audiusSdk,
       env
     } as unknown as QueryContextType
 
+    const content = (
+      <RouterContextProvider>
+        <AppContext.Provider value={mockAppContext}>
+          <ToastContextProvider>{children}</ToastContextProvider>
+        </AppContext.Provider>
+      </RouterContextProvider>
+    )
+
     return (
       <WagmiProvider config={mockWagmiConfig}>
-        <HistoryContextProvider historyOverride={customHistory}>
-          <MediaProvider>
-            <QueryClientProvider client={queryClient}>
-              <QueryContext.Provider value={queryContext}>
-                <ThemeProvider theme='day'>
-                  <ReduxProvider initialStoreState={reduxState}>
-                    <RouterContextProvider>
-                      <AppContext.Provider value={mockAppContext}>
-                        <ToastContextProvider>
-                          <HistoryContext.Consumer>
-                            {({ history }) => {
-                              return (
-                                <Router history={history}>
-                                  <CompatRouter>{children}</CompatRouter>
-                                </Router>
-                              )
-                            }}
-                          </HistoryContext.Consumer>
-                        </ToastContextProvider>
-                      </AppContext.Provider>
-                    </RouterContextProvider>
-                  </ReduxProvider>
-                </ThemeProvider>
-              </QueryContext.Provider>
-            </QueryClientProvider>
-          </MediaProvider>
-        </HistoryContextProvider>
+        <MediaProvider>
+          <QueryClientProvider client={queryClient}>
+            <QueryContext.Provider value={queryContext}>
+              <ThemeProvider theme='day'>
+                <ReduxProvider initialStoreState={reduxState}>
+                  {skipRouter ? (
+                    content
+                  ) : (
+                    <BrowserRouter>
+                      <NavigationSetup>{content}</NavigationSetup>
+                    </BrowserRouter>
+                  )}
+                </ReduxProvider>
+              </ThemeProvider>
+            </QueryContext.Provider>
+          </QueryClientProvider>
+        </MediaProvider>
       </WagmiProvider>
     )
   }
