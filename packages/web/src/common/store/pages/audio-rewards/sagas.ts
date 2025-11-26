@@ -31,7 +31,6 @@ import {
 } from '@audius/common/store'
 import {
   isResponseError,
-  route,
   waitForValue,
   isPlayCountChallenge
 } from '@audius/common/utils'
@@ -62,7 +61,6 @@ import {
   visibilityPollingDaemon
 } from 'utils/sagaPollingDaemons'
 
-const { AUDIO_PAGE } = route
 const { show: showMusicConfetti } = musicConfettiActions
 const { setVisibility } = modalsActions
 const {
@@ -749,10 +747,6 @@ function* userChallengePollingDaemon() {
   const defaultChallengePollingTimeout = remoteConfigInstance.getRemoteVar(
     IntKeys.CHALLENGE_REFRESH_INTERVAL_MS
   )!
-  const audioRewardsPageChallengePollingTimeout =
-    remoteConfigInstance.getRemoteVar(
-      IntKeys.CHALLENGE_REFRESH_INTERVAL_AUDIO_PAGE_MS
-    )!
 
   yield* take(fetchAccountSucceeded.type)
   if (!isNativeMobile) {
@@ -765,9 +759,7 @@ function* userChallengePollingDaemon() {
     foregroundPollingDaemon,
     fetchUserChallenges(),
     defaultChallengePollingTimeout,
-    {
-      [AUDIO_PAGE]: audioRewardsPageChallengePollingTimeout
-    }
+    {}
   )
 }
 
