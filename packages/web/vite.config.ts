@@ -13,21 +13,6 @@ import svgr from 'vite-plugin-svgr'
 
 const SOURCEMAP_URL = 'https://s3.us-west-1.amazonaws.com/sourcemaps.audius.co/'
 
-const fixAcceptHeader404 = () => ({
-  // Fix issue with vite dev server and `wait-on`
-  // https://github.com/vitejs/vite/issues/9520
-  // Can be removed when upgrading to vite5.
-  name: 'fix-accept-header-404',
-  configureServer(server) {
-    server.middlewares.use((req, _res, next) => {
-      if (req.headers.accept === 'application/json, text/plain, */*') {
-        req.headers.accept = '*/*'
-      }
-      next()
-    })
-  }
-})
-
 export default defineConfig(async ({ mode }) => {
   // Despite loading env here, the result is the same as a filtered process.env
   // rather than dynamically loading the correct env file by mode.
@@ -141,8 +126,7 @@ export default defineConfig(async ({ mode }) => {
               filename: 'analyse.html'
             })
           ]
-        : []) as any),
-      fixAcceptHeader404()
+        : []) as any)
     ],
     resolve: {
       alias: {
