@@ -49,6 +49,19 @@ const getClientAliases = () => {
  * @type {import('metro-config').MetroConfig}
  */
 const config = {
+  server: {
+    enhanceMiddleware: (middleware) => {
+      return (req, res, next) => {
+        if (req.url === '/status') {
+          // Android dev check expects this exact string
+          res.writeHead(200, { 'Content-Type': 'text/plain' })
+          res.end('packager-status:running')
+          return
+        }
+        return middleware(req, res, next)
+      }
+    }
+  },
   transformer: {
     getTransformOptions: async () => ({
       transform: {
@@ -94,6 +107,11 @@ const config = {
         __dirname,
         './node_modules',
         'react-native-reanimated'
+      ),
+      'react-native-gesture-handler': path.resolve(
+        __dirname,
+        './node_modules',
+        'react-native-gesture-handler'
       ),
 
       react: resolveModule('react'),
