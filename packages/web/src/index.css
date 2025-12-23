@@ -1,4 +1,3 @@
-@import 'antd/dist/antd.min.css';
 @import './assets/styles/index.css';
 @import 'react-perfect-scrollbar/dist/css/styles.css';
 
@@ -142,10 +141,6 @@ table {
 
 *:focus {
   outline: none !important;
-}
-
-a :not(::hover) {
-  text-decoration: none !important;
 }
 
 /* End Reset.css */
