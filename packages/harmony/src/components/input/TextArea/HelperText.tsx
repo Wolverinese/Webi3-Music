@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Text } from '@audius/harmony'
+import { Text } from '../../text'
 
 import styles from './HelperText.module.css'
 
