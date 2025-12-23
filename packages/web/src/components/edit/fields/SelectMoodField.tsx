@@ -1,29 +1,29 @@
-import { DropdownField, DropdownFieldProps } from 'components/form-fields'
-import { moodMap } from 'utils/Moods'
+import { SelectField, SelectFieldProps } from 'components/form-fields'
+import { moodEmojiMap } from 'utils/Moods'
 
-const MOODS = Object.entries(moodMap).map(([k, el]) => ({
-  text: k,
-  el
+const options = Object.entries(moodEmojiMap).map(([mood, emojiClass]) => ({
+  value: mood,
+  label: mood,
+  leadingElement: (
+    <i className={`emoji ${emojiClass}`} style={{ marginBottom: 0 }} />
+  )
 }))
-
-const menu = { items: MOODS }
 
 const messages = {
   mood: 'Pick a Mood'
 }
 
-type SelectMoodFieldProps = Partial<DropdownFieldProps> & {
+type SelectMoodFieldProps = Partial<SelectFieldProps> & {
   name: string
 }
 
 export const SelectMoodField = (props: SelectMoodFieldProps) => {
   return (
-    <DropdownField
+    <SelectField
       aria-label={messages.mood}
+      label='Mood'
       placeholder={messages.mood}
-      mount='parent'
-      menu={menu}
-      size='large'
+      options={options}
       {...props}
     />
   )

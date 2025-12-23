@@ -2,13 +2,11 @@ import { useRef, useState, useEffect } from 'react'
 
 import { Theme } from '@audius/common/models'
 import { formatCount } from '@audius/common/utils'
+import { Select } from '@audius/harmony'
 import moment from 'moment'
 import numeral from 'numeral'
 import PropTypes from 'prop-types'
 import { Line } from 'react-chartjs-2'
-
-import DropdownInput from 'components/data-entry/DropdownInput'
-import Dropdown from 'components/navigation/Dropdown'
 
 import { messages } from '../DashboardPage'
 
@@ -219,7 +217,11 @@ const TotalPlaysChart = ({
   theme
 }) => {
   const [chartSize, setChartSize] = useState({ width: 0, height: 0 })
-  const [yearOptions, setYearOptions] = useState([{ text: messages.thisYear }])
+  const [yearOptions, setYearOptions] = useState([
+    { value: messages.thisYear, label: messages.thisYear }
+  ])
+  const [selectedTrackId, setSelectedTrackId] = useState('-1')
+  const [selectedYear, setSelectedYear] = useState(messages.thisYear)
 
   const chartContainer = useRef()
   const chart = useRef()
@@ -250,7 +252,8 @@ const TotalPlaysChart = ({
     const diff = today.diff(createdAt, 'years')
     const years = []
     for (let i = 0; i < diff; i++) {
-      years.push({ text: createdAt.clone().add(i, 'years').year() })
+      const year = createdAt.clone().add(i, 'years').year()
+      years.push({ value: String(year), label: String(year) })
     }
     setYearOptions((prev) => [...prev, ...years])
 
@@ -261,10 +264,10 @@ const TotalPlaysChart = ({
 
   const trackOptions = [{ name: 'All Tracks', id: -1 }].concat(tracks)
 
-  const tracksMenu = {
-    items: trackOptions.map((t) => ({ id: t.id, text: t.name }))
-  }
-  const yearsMenu = { items: yearOptions }
+  const tracksOptions = trackOptions.map((t) => ({
+    value: String(t.id),
+    label: t.name
+  }))
 
   const lineData = getDataProps(data, theme)
   const lineGraphOptions = getLineGraphOptions(transformMonth)
@@ -274,21 +277,27 @@ const TotalPlaysChart = ({
       <div className={styles.playsTileHeading}>
         <div className={styles.playsTileHeader}>Total Plays</div>
         <div className={styles.playsTrackDropdown}>
-          <DropdownInput
-            size='small'
-            variant='alternative'
-            onSelect={onSetTrackOption}
+          <Select
+            value={selectedTrackId}
+            onChange={(value) => {
+              setSelectedTrackId(value)
+              onSetTrackOption?.(parseInt(value, 10))
+            }}
             placeholder='All Tracks'
-            menu={tracksMenu}
+            options={tracksOptions}
+            hideLabel
           />
         </div>
         <div className={styles.playsYearDropdown}>
-          <Dropdown
-            size='small'
-            onSelect={onSetYearOption}
-            variant='border'
+          <Select
+            value={selectedYear}
+            onChange={(value) => {
+              setSelectedYear(value)
+              onSetYearOption?.(value)
+            }}
             placeholder={messages.thisYear}
-            menu={yearsMenu}
+            options={yearOptions}
+            hideLabel
           />
         </div>
       </div>

@@ -4,7 +4,7 @@ import { Flex } from '@audius/harmony'
 import { Mood } from '@audius/sdk'
 
 import { MetadataItem } from 'components/entity/MetadataItem'
-import { moodMap } from 'utils/Moods'
+import { MOODS } from 'utils/Moods'
 
 type TrackMetadataListProps = {
   trackId: ID
@@ -19,7 +19,15 @@ export const TrackMetadataList = (props: TrackMetadataListProps) => {
     trackId
   })
 
-  const renderMood = (value: string) => moodMap[value as Mood]
+  const renderMood = (value: string) => {
+    const moodInfo = MOODS[value as Mood]
+    if (!moodInfo) return value
+    return (
+      <Flex alignItems='center' gap='xs'>
+        {moodInfo.label} {moodInfo.icon}
+      </Flex>
+    )
+  }
 
   return (
     <Flex as='dl' w='100%' gap='l' wrap='wrap'>
