@@ -5,10 +5,9 @@ import {
   IconLogoCircleUSDCPng,
   Text,
   IconButton,
-  IconInfo
+  IconInfo,
+  Tooltip
 } from '@audius/harmony'
-
-import Tooltip from 'components/tooltip/Tooltip'
 
 export const CashBalanceSection = () => {
   const { balanceFormatted } = useFormattedUSDCBalance()

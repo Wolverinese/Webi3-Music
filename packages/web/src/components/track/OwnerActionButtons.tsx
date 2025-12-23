@@ -11,11 +11,11 @@ import {
   IconButton,
   IconPencil,
   IconRocket,
-  IconShare
+  IconShare,
+  Tooltip
 } from '@audius/harmony'
 import { useDispatch } from 'react-redux'
 
-import Tooltip from 'components/tooltip/Tooltip'
 import { push } from 'utils/navigation'
 
 const { makeTrackPublic } = trackPageActions

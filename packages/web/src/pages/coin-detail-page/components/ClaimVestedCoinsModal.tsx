@@ -11,11 +11,11 @@ import {
   IconInfo,
   spacing,
   Text,
-  TextInput
+  TextInput,
+  Tooltip
 } from '@audius/harmony'
 
 import ResponsiveModal from '../../../components/modal/ResponsiveModal'
-import Tooltip from '../../../components/tooltip/Tooltip'
 
 const messages = coinDetailsMessages.claimVestedCoinsModal
 

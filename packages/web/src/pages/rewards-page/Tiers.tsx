@@ -28,11 +28,11 @@ import {
   IconValidationCheck,
   IconRefresh,
   useTheme,
-  Paper
+  Paper,
+  Tooltip
 } from '@audius/harmony'
 import { useDispatch } from 'react-redux'
 
-import { Tooltip } from 'components/tooltip'
 import { useWithMobileStyle } from 'hooks/useWithMobileStyle'
 
 import styles from './Tiers.module.css'

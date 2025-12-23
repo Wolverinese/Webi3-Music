@@ -3,11 +3,10 @@ import {
   DeveloperApp,
   useCurrentUserId
 } from '@audius/common/api'
-import { ModalContentText, IconPlus, Button } from '@audius/harmony'
+import { ModalContentText, IconPlus, Button, Tooltip } from '@audius/harmony'
 
 import { Divider } from 'components/divider'
 import LoadingSpinner from 'components/loading-spinner/LoadingSpinner'
-import { Tooltip } from 'components/tooltip'
 
 import { DeveloperAppListItem } from './DeveloperAppListItem'
 import styles from './YourAppsPage.module.css'
