@@ -1,4 +1,11 @@
-import { useCallback, useState, useRef, useEffect, useMemo } from 'react'
+import {
+  useCallback,
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  MutableRefObject
+} from 'react'
 
 import { useSearchAutocomplete } from '@audius/common/api'
 import { Kind } from '@audius/common/models'
@@ -7,19 +14,17 @@ import { searchActions, searchSelectors } from '@audius/common/store'
 import { route } from '@audius/common/utils'
 import {
   IconSearch,
-  IconCloseAlt,
-  IconButton,
   IconArrowRight,
   Flex,
   LoadingSpinner,
   Text,
   PlainButton,
+  TextInput,
+  TextInputSize,
   useHotkeys,
   ModifierKeys
 } from '@audius/harmony'
-import AutoComplete from 'antd/lib/auto-complete'
-import Input from 'antd/lib/input'
-import type { InputRef } from 'antd/lib/input'
+import { Menu, MenuContent } from '@audius/harmony/src/components/internal/Menu'
 import cn from 'classnames'
 import { useDispatch, useSelector } from 'react-redux'
 import {
@@ -111,7 +116,11 @@ export const DesktopSearchBar = () => {
     [inputValue]
   )
 
-  const inputRef = useRef<InputRef>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const inputContainerRef = useRef<HTMLDivElement>(null)
+  const anchorRef = inputContainerRef as MutableRefObject<HTMLElement | null>
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
 
   const isSearchPage = !!matchPath(SEARCH_PAGE, location.pathname)
@@ -135,16 +144,14 @@ export const DesktopSearchBar = () => {
     searchParams
   ])
 
-  const handleSearch = useCallback((value: string) => {
-    setInputValue(value)
-  }, [])
-
-  const handleClear = useCallback(() => {
-    setInputValue('')
+  const handleSearch = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value)
+    setIsMenuOpen(true)
   }, [])
 
   const handleSelect = useCallback(() => {
     setInputValue('')
+    setIsMenuOpen(false)
   }, [])
 
   const handleKeyDown = useCallback(
@@ -168,25 +175,6 @@ export const DesktopSearchBar = () => {
       setSearchParams
     ]
   )
-
-  const renderSuffix = () => {
-    if (inputValue && !isLoading) {
-      return (
-        <IconButton
-          icon={IconCloseAlt}
-          size='2xs'
-          color='subdued'
-          onClick={handleClear}
-          aria-label={messages.clearSearch}
-          onMouseDown={(e) => e.preventDefault()}
-        />
-      )
-    }
-
-    if (inputValue && isLoading) {
-      return <LoadingSpinner size='s' />
-    }
-  }
 
   const autocompleteOptions = useMemo(() => {
     if (!data) return []
@@ -309,7 +297,10 @@ export const DesktopSearchBar = () => {
     return baseOptions
   }, [handleClickClear, inputValue, searchHistory])
 
-  const showResults = !isSearchPage && !!(data || searchHistory || isLoading)
+  const options = data ? autocompleteOptions : recentSearchOptions
+  const hasOptions = options.length > 0
+  const showResults = !isSearchPage && hasOptions
+  const shouldShowMenu = isMenuOpen && showResults
   // Calculate hasNoResults for the dropdown class name
   const hasNoResults =
     data &&
@@ -317,32 +308,28 @@ export const DesktopSearchBar = () => {
     autocompleteOptions.length === 1 &&
     String(autocompleteOptions[0].options?.[0]?.value) === 'no-results'
 
-  const handleFocus = useCallback(() => {
-    const searchElement = inputRef.current?.input?.closest(
-      '.ant-select-selection-search'
-    )
-    if (searchElement) {
-      searchElement.classList.add('expanded')
+  // Update menu visibility based on results
+  useEffect(() => {
+    if (hasOptions && inputValue) {
+      setIsMenuOpen(true)
     }
+  }, [hasOptions, inputValue])
+
+  const handleFocus = useCallback(() => {
+    setIsMenuOpen(true)
   }, [])
 
   const handleBlur = useCallback(() => {
-    if (!document.hasFocus()) return
-
-    const searchElement = inputRef.current?.input?.closest(
-      '.ant-select-selection-search'
-    )
-    if (searchElement) {
-      setTimeout(
-        () => searchElement.classList.remove('expanded'),
-        // Wait for dropdown to close before contracting
-        showResults ? 100 : 0
-      )
-    }
-  }, [showResults])
+    // Delay closing to allow clicks on menu items
+    setTimeout(() => {
+      if (!document.hasFocus()) return
+      setIsMenuOpen(false)
+    }, 200)
+  }, [])
 
   const focusSearchInput = useCallback(() => {
     inputRef.current?.focus()
+    setIsMenuOpen(true)
   }, [])
 
   // Set up hotkeys for '/' and 'Cmd + K' to focus search input
@@ -355,34 +342,151 @@ export const DesktopSearchBar = () => {
     }
   })
 
-  return (
-    <Flex className={styles.searchBar}>
-      <AutoComplete
-        dropdownClassName={cn(styles.searchBox, {
-          [styles.searchBoxEmpty]: hasNoResults
-        })}
-        dropdownMatchSelectWidth={false}
-        options={data ? autocompleteOptions : recentSearchOptions}
-        value={inputValue}
-        onSearch={handleSearch}
-        onSelect={handleSelect}
-        getPopupContainer={(trigger) => trigger.parentNode as HTMLElement}
+  const renderMenuContent = () => {
+    return (
+      <MenuContent
+        scrollRef={scrollRef}
+        maxHeight='560px'
+        width='280px'
+        MenuListProps={{
+          css: {
+            padding: '16px 8px',
+            overflowY: 'auto',
+            width: '100%'
+          }
+        }}
+        aria-label='Search results'
       >
-        <Input
-          inputMode='search'
+        {options.map((group, groupIndex) => (
+          <Flex key={groupIndex} direction='column' gap='xs' w='100%'>
+            {group.label && (
+              <Text
+                variant='label'
+                size='xs'
+                color='subdued'
+                css={{
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.7px',
+                  padding: '8px',
+                  fontWeight: 'bold'
+                }}
+              >
+                {group.label}
+              </Text>
+            )}
+            {group.options.map((option, optionIndex) => (
+              <Flex
+                key={optionIndex}
+                onClick={() => {
+                  if (
+                    option.value !== 'viewMore' &&
+                    option.value !== 'no-results'
+                  ) {
+                    handleSelect()
+                  }
+                }}
+                css={{
+                  cursor: 'pointer',
+                  borderRadius: '4px',
+                  padding: '4px 8px',
+                  '&:hover': {
+                    backgroundColor: 'var(--harmony-bg-surface-2)'
+                  }
+                }}
+              >
+                {option.label}
+              </Flex>
+            ))}
+          </Flex>
+        ))}
+      </MenuContent>
+    )
+  }
+
+  return (
+    <Flex className={styles.searchBar} css={{ position: 'relative' }}>
+      <div
+        ref={inputContainerRef}
+        css={{
+          position: 'relative',
+          zIndex: 2,
+          display: 'inline-block',
+          width: inputValue ? '280px' : '160px',
+          transition: 'width 0.2s ease-in-out'
+        }}
+      >
+        <TextInput
           ref={inputRef}
+          label={messages.searchPlaceholder}
+          hideLabel
+          size={TextInputSize.EXTRA_SMALL}
+          value={inputValue}
+          onChange={handleSearch}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
           placeholder={messages.searchPlaceholder}
           name='search'
           autoComplete='off'
           type='search'
-          prefix={<IconSearch color='subdued' />}
-          suffix={renderSuffix()}
-          spellCheck={false}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
+          startIcon={IconSearch}
+          css={{
+            width: '100%',
+            '& input': {
+              fontSize: 'var(--harmony-font-xs)',
+              fontWeight: 'var(--harmony-font-medium)',
+              marginLeft: '2px',
+              background: 'unset !important',
+              color: 'var(--harmony-neutral) !important'
+            },
+            '& .contentContainer': {
+              background: inputValue
+                ? 'var(--harmony-white)'
+                : 'var(--search-bar-background)',
+              boxShadow: '0 2px 5px 0 var(--search-bar-shadow)',
+              borderRadius: '4px',
+              border: 'none',
+              padding: '0 12px',
+              height: '32px',
+              minHeight: '32px'
+            }
+          }}
         />
-      </AutoComplete>
+        {isLoading && inputValue && (
+          <Flex
+            css={{
+              position: 'absolute',
+              right: '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              pointerEvents: 'none',
+              zIndex: 3
+            }}
+          >
+            <LoadingSpinner size='s' />
+          </Flex>
+        )}
+      </div>
+      <Menu
+        anchorRef={anchorRef}
+        isVisible={shouldShowMenu}
+        onClose={() => setIsMenuOpen(false)}
+        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+        dismissOnMouseLeave={false}
+        zIndex={10000}
+        className={cn(styles.searchBox, {
+          [styles.searchBoxEmpty]: hasNoResults
+        })}
+        PaperProps={{
+          css: {
+            width: '280px',
+            maxHeight: '560px'
+          }
+        }}
+      >
+        {renderMenuContent()}
+      </Menu>
     </Flex>
   )
 }
