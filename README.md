@@ -6,7 +6,7 @@
   <br/>
 
   <p align="center">
-    Webi3 Cipheron
+    Webi3 $hoX
     <br/>
     🎧🎹🤘
   </p>
