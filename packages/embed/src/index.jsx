@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { createRoot } from 'react-dom/client'
-import { Route, Routes, BrowserRouter } from 'react-router-dom'
+import { Route, Routes, BrowserRouter } from 'react-router'
 
 import './util/initWeb3'
 import App from './components/app'

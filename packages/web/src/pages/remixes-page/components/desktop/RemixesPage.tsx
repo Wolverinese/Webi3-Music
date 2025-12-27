@@ -17,7 +17,7 @@ import {
 import { pluralize } from '@audius/common/utils'
 import { IconRemix, Text } from '@audius/harmony'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 
 import { Header } from 'components/header/desktop/Header'
 import { TanQueryLineup } from 'components/lineup/TanQueryLineup'

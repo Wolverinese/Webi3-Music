@@ -17,7 +17,7 @@ import {
 import { route, pluralize } from '@audius/common/utils'
 import { IconRemix as IconRemixes } from '@audius/harmony'
 import { useDispatch, useSelector } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams } from 'react-router'
 
 import Header from 'components/header/mobile/Header'
 import { HeaderContext } from 'components/header/mobile/HeaderContextProvider'

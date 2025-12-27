@@ -4,7 +4,7 @@ import { useCanSendMessage } from '@audius/common/hooks'
 import { chatActions, chatSelectors } from '@audius/common/store'
 import { ResizeObserver } from '@juggle/resize-observer'
 import { useDispatch } from 'react-redux'
-import { useParams, useLocation, useNavigate } from 'react-router-dom'
+import { useParams, useLocation, useNavigate } from 'react-router'
 import useMeasure from 'react-use-measure'
 
 import Page from 'components/page/Page'
