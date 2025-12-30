@@ -6,7 +6,7 @@
   <br/>
 
   <p align="center">
-    The Audius Monorepo
+    The Audius Webi3 Monorepo
     <br/>
     🎧🎸🎹🤘🎶🥁🎷🎻🎤🔊
   </p>
