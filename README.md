@@ -1,7 +1,7 @@
 <p align="center">
   <br/>
-  <img src="./packages/web/src/assets/img/audiusLogoColored.png#gh-light-mode-only" alt="Audius Logo" width="200">
-  <img src="./packages/web/src/assets/img/audiusLogoWhite.png#gh-dark-mode-only" alt="Audius Logo" width="200">
+  <img src="./packages/web/src/assets/img/audiusLogoColored.png#gh-light-mode-only" alt="Webi3 Logo" width="200">
+  <img src="./packages/web/src/assets/img/audiusLogoWhite.png#gh-dark-mode-only" alt="Webi3 Logo" width="200">
 
   <br/>
 
@@ -24,11 +24,11 @@ For details on operating an Audius service, getting started with the Token and t
 ## Packages
 
 | Name                                                                                            | Description                                                                                                                                                                           |
-| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| --------------------------------------------$hoX | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`web`](./packages/web)                                                                         | Web and desktop apps                                                                                                                                                                  |
 | [`mobile`](./packages/mobile)                                                                   | Mobile app                                                                                                                                                                            |
 | [`embed`](./packages/embed)                                                                     | Embed player that renders on third party sites (like X and Discord)                                                                                                                   |
-| [`sdk`](./packages/sdk)                                                                         | The `@audius/sdk` typescript SDK                                                                                                                                                      |
+| [`sdk`](./packages/sdk)                                                                         | The `@webie/sdk` typescript SDK                                                                                                                                                      |
 | [`harmony`](./packages/harmony)                                                                 | The Audius design system                                                                                                                                                              |
 | [`common`](./packages/common)                                                                   | Shared code between web and mobile                                                                                                                                                    |
 | [`identity-service`](packages/identity-service)                                                 | Audius auth library                                                                                                                                                                   |
@@ -83,7 +83,7 @@ For example:
 npm run web:prod
 ```
 
-For all available commands please see the [package.json scripts](https://github.com/AudiusProject/apps/blob/f850434ddca7d697f78a58d971f9bba1aba7f24d/package.json#L10) and the relevant package READMEs.
+For all available commands please see the [package.json scripts](https://github.com/Webi3/apps/blob/f850434ddca7d697f78a58d971f9bba1aba7f24d/package.json#L10) and the relevant package READMEs.
 
 ## Contributing
 
@@ -92,9 +92,9 @@ our team [on Discord](https://discord.gg/audius) or via other channels for feedb
 
 ## Security
 
-Please report security issues to `security@audius.co` with a description of the
-vulnerability and any steps to reproduce. Details on our bug bounty program are available at [audius.org/security](https://audius.org/security)
+Please report security issues to `security@wolverineseye.com` with a description of the
+vulnerability and any steps to reproduce. Details on our bug bounty program are available at [audius.org/security](https://webi3.ltd)
 
 ## License
 
-Apache 2.0: [LICENSE file](https://github.com/AudiusProject/apps/blob/main/LICENSE)
+Apache 2.0: [LICENSE file](https://github.com/Webi3/apps/blob/main/LICENSE)
