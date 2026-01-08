@@ -8,7 +8,7 @@
   <p align="center">
     The Audius Webi3 Monorepo
     <br/>
-    🎧🎸🎹🤘🎶🥁🎷🎻🎤🔊
+    🎧🎶⛓️🫆
   </p>
 </p>
 
