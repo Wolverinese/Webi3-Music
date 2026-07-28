@@ -92,7 +92,7 @@ our team [on Discord](https://discord.gg/audius) or via other channels for feedb
 
 ## Security
 
-Please report security issues to `security@wolverineseye.com` with a description of the
+Please report security issues to `webi3@wolverineseye.com` with a description of the
 vulnerability and any steps to reproduce. Details on our bug bounty program are available at [audius.org/security](https://shox.live)
 
 ## License
